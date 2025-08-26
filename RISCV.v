@@ -53,33 +53,7 @@ module DRAM (
 
     assign read_data = memory[address]; //  Async read
 endmodule
-//module DRAM (
-//    input clk,
-//    input rst,
-//    input memwrite,
-//    input [31:0] address,
-//    input [31:0] write_data,
-//    output [31:0] read_data
-//);
-//    reg [31:0] memory [0:255];
-//    integer i;
 
-//    // Initialize memory from file
-//    initial begin
-//        $readmemh("/home/bhuvaneshganta/Desktop/DRAM.mem", memory);
-//    end
-
-//    always @(posedge clk or posedge rst) begin
-//        if (rst) begin
-//            // Reset does NOT overwrite memory contents
-//            // (File-loaded values persist through reset)
-//        end
-//        else if (memwrite) begin
-//            memory[address] <= write_data;
-//        end
-//    end
-//    assign read_data = memory[address]; // Async read
-//endmodule
 
 module dpath(
     input clk,
@@ -196,14 +170,6 @@ module PC(
     always @(posedge clk or posedge rst) begin
         if (rst)
             pc <= 32'b0;
-//        else if (PCsel)
-//            pc <= pc + imm_in; // Raw word offset (no scaling)
-//        else if (~PCsel)
-//            pc <= pc + 32'b00000000000000000000000000000001;      // Normal word-address increment
-////        else 
-////            pc<= pc + imm_in;
-//        else begin
-//         pc = pc+ (PCsel==0?1:imm_in);
     
  
     else if (PCsel==1)
@@ -233,45 +199,6 @@ module IMEM(
                 
 initial begin
 
-
-//initialize x7 as i counter var
-//initialize x8 as 9; max variable
-//branch to check i< x8;else jump with offset +12
-//mem[0]<=32'b0;
-//mem[1] <= 32'b000000000100_00000_000_01000_0010011; // addi x8, x0, 2 counter
-//mem[2]<=32'b000000000000_00001_000_01010_0010011;  // replace this with loading 0th popsition of dram into x10
-//mem[3] <= 32'b0_000001_01000_00111_100_0000_0_1100011; // blt x7, x8, body increase offsetif counte exceeded
-//mem[4] <= 32'b00000000000100111000001110010011; // addi x7, x7, 1
-////load element from dram with offset counter into x11
-////blt if x10<x11 swap x10 should be max once counter gets over
-//mem[5]<=32'b1_00000001_0_0000000000_00000_1101111;  //jal back into loop
-
-////mem[5] <= 32'h00000013; // nop (land here after looping)
-
-
-
-//    mem[0] <= 32'b00000000000000000000000000000000; // NOP, x7 starts at 0          //MAXLOOP WORKED
-
-//    mem[1] <= 32'b000000000011_00000_000_01000_0010011; // addi x8, x0, 3     ; counter limit = 2
-
-//    mem[2] <= 32'b000000000000_00000_010_01010_0000011; // lw   x10, 0(x0)      ; max = MEM[0]
-
-//    mem[3] <= 32'b0_000000_01000_00111_100_1110_0_1100011; // blt  x8, x7, +14   ; if x8 < x7, jump ahead 14 (LOOP EXIT)
-
-//    mem[4] <= 32'b000000000001_00111_000_00111_0010011; // addi x7, x7, 1       ; i++
-
-//    mem[5] <= 32'b000000000000_00111_010_01011_0000011; // lw   x11, 0(x7)      ; load MEM[i]
-
-//    mem[6] <= 32'b0_000000_01010_01011_100_0100_0_1100011; // blt  x10, x11, +8   ; if max < new, goto UPDATE
-
-//    mem[7] <= 32'b0_00000001_0_0000000000_00000_1101111; // jal  x0, +2          ; skip UPDATE
-
-//    mem[8] <= 32'b000000000000_01011_000_01010_0010011; // addi x10, x11, 0     ; max = new
-
-//    mem[9] <= 32'b1_00000011_0_0000000000_00000_1101111; // jal  x0, -6          ; jump back to LOOP_HEAD (mem[3])
-
-
-// [0] i = 0
 mem[0]  <= 32'b000000000000_00000_000_00101_0010011; // addi x5, x0, 0     ; i = 0
 // [1] N = 4
 mem[1]  <= 32'b000000010101_00000_000_00111_0010011; // addi x7, x0, 4     ; N = 20 or 10 according to data used
@@ -332,48 +259,6 @@ mem[20] <= 32'b1_00001001_0_0000000000_00000_1101111; // jal x0, -Y          ; t
 mem[21] <= 32'b000000000000_00000_000_00000_0010011; // nop
 
   
-// Setup
-// Setup
-//mem[0]  <= 32'b000000000001_00000_000_00001_0010011; // addi x1, x0, 1         ; x1 = 1
-//mem[1]  <= 32'b000000000001_00000_000_00101_0010011; // addi x5, x0, 1         ; i = 1
-//mem[2]  <= 32'b000000010100_00000_000_00111_0010011; // addi x7, x0, 20        ; N = 20
-//mem[3]  <= 32'b000000000000_00000_000_00011_0010011; // addi x3, x0, 0         ; base = 0 (array starts at memory[0])
-
-//// OUTER_LOOP:
-//mem[4]  <= 32'b0000000_00101_00111_100_01000_1100011; // blt x5, x7, +8         ; if (i < N) → continue   
-//mem[5]  <= 32'b01111111100000000000000001101111;      // jal x0, offset         ; EXIT jump
-
-//// continue:
-//mem[6]  <= 32'b000000000000_00101_010_01010_0000011; // lw x10, 0(x5)          ; key = arr[i]
-//mem[7]  <= 32'b0100000_00001_00101_000_00110_0110011; // sub x6, x5, x1         ; j = i - 1
-
-//// INNER_LOOP:
-//mem[8]  <= 32'b0000000_00000_00110_100_01000_1100011; // blt x0, x6, +8         ; if (j >= 0) → check_value
-//mem[9]  <= 32'b0_00000100_0_0000000000_00000_1101111;      // jal x0, offset         ; jumpout (exit inner loop)
-//mem[10] <= 32'b000000000000_00110_010_01011_0000011; // lw x11, 0(x6)          ; temp = arr[j]
-//mem[11] <= 32'b0000000_01010_01011_100_01000_1100011; // blt x10, x11, +8       ; if (key < temp) → shift
-//mem[12] <= 32'b0_00000010_1_0000000000_00000_1101111; // jal x0, offset         ; jumpout (exit inner loop)
-
-//// shift:
-//mem[13] <= 32'b000000000001_00110_000_01100_0010011; // addi x12, x6, 1        ; x12 = j + 1
-//mem[14] <= 32'b0000000_01011_01100_010_00000_0100011; // sw x11, 0(x12)         ; arr[j+1] = arr[j]
-//mem[15] <= 32'b0100000_00001_00110_000_00110_0110011; // sub x6, x6, x1         ; j--
-//mem[16] <= 32'b1_00000100_0_0000000000_00000_1101111; // jal x0, offset         ; jump to inner_loop (to [8])
-
-//// insert:
-//mem[17] <= 32'b000000000001_00110_000_01100_0010011; // addi x12, x6, 1        ; x12 = j + 1
-//mem[18] <= 32'b0000000_01010_01100_010_00000_0100011; // sw x10, 0(x12)         ; arr[j+1] = key
-//mem[19] <= 32'b000000000001_00101_000_00101_0010011; // addi x5, x5, 1         ; i++
-//mem[20] <= 32'b1_00001000_0_0000000000_00000_1101111; // jal x0, offset         ; jump to outer_loop (to [4])
-
-//// END
-//mem[21] <= 32'b000000000000_00000_000_00000_0010011; // nop                    ; final nop
-
-
-
-//        end else begin
-//            mem[address>>2] <= win;
-//        end
    end
 
     assign ins=mem[address>>2];
