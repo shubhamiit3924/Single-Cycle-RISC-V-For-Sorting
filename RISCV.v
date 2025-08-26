@@ -18,41 +18,6 @@
 // Additional Comments:
 // 
 //////////////////////////////////////////////////////////////////////////////////
-//module DRAM (
-//    input clk,
-//    input rst,
-//    input memwrite,
-//    input [31:0] address,
-//    input [31:0] write_data,
-//    output [31:0] read_data
-//);
-//    reg [31:0] memory [0:255];
-//    integer i;
-
-//    always @( posedge clk or posedge rst) begin
-//        if (rst) begin
-//            for (i = 0; i < 256; i 
-//            = i + 1)
-//                memory[i] <= 32'b0;
-
-//            memory[0] <= 32'd42949672;  // Large positive number
-//            memory[1] <= 32'd98374839;  // Larger number
-//            memory[2] <= 32'd23784932;
-//            memory[3] <= 32'd74839201;
-//            memory[4] <= 32'd12938475;
-//            memory[5] <= 32'd99887766;
-//            memory[6] <= 32'd11344;
-//            memory[7] <= 32'd6788;
-//            memory[8] <= 32'd66;
-//            memory[9] <= 32'd77778888;
-
-//        end else if (memwrite) begin
-//            memory[address] = write_data;
-//        end
-//    end
-
-//    assign read_data = memory[address]; //  Async read
-//endmodule
 module DRAM (
     input clk,
     input rst,
@@ -64,22 +29,57 @@ module DRAM (
     reg [31:0] memory [0:255];
     integer i;
 
-    // Initialize memory from file
-    initial begin
-        $readmemh("/home/bhuvaneshganta/Desktop/DRAM.mem", memory);
+    always @( posedge clk or posedge rst) begin
+        if (rst) begin
+            for (i = 0; i < 256; i 
+            = i + 1)
+                memory[i] <= 32'b0;
+
+            memory[0] <= 32'd42949672;  // Large positive number
+            memory[1] <= 32'd98374839;  // Larger number
+            memory[2] <= 32'd23784932;
+            memory[3] <= 32'd74839201;
+            memory[4] <= 32'd12938475;
+            memory[5] <= 32'd99887766;
+            memory[6] <= 32'd11223344;
+            memory[7] <= 32'd55667788;
+            memory[8] <= 32'd33445566;
+            memory[9] <= 32'd77778888;
+
+        end else if (memwrite) begin
+            memory[address] = write_data;
+        end
     end
 
-    always @(posedge clk or posedge rst) begin
-        if (rst) begin
-            // Reset does NOT overwrite memory contents
-            // (File-loaded values persist through reset)
-        end
-        else if (memwrite) begin
-            memory[address] <= write_data;
-        end
-    end
-    assign read_data = memory[address]; // Async read
+    assign read_data = memory[address]; //  Async read
 endmodule
+//module DRAM (
+//    input clk,
+//    input rst,
+//    input memwrite,
+//    input [31:0] address,
+//    input [31:0] write_data,
+//    output [31:0] read_data
+//);
+//    reg [31:0] memory [0:255];
+//    integer i;
+
+//    // Initialize memory from file
+//    initial begin
+//        $readmemh("/home/bhuvaneshganta/Desktop/DRAM.mem", memory);
+//    end
+
+//    always @(posedge clk or posedge rst) begin
+//        if (rst) begin
+//            // Reset does NOT overwrite memory contents
+//            // (File-loaded values persist through reset)
+//        end
+//        else if (memwrite) begin
+//            memory[address] <= write_data;
+//        end
+//    end
+//    assign read_data = memory[address]; // Async read
+//endmodule
 
 module dpath(
     input clk,
@@ -270,11 +270,11 @@ initial begin
 
 //    mem[9] <= 32'b1_00000011_0_0000000000_00000_1101111; // jal  x0, -6          ; jump back to LOOP_HEAD (mem[3])
 
-//BUBBLE SORT
+
 // [0] i = 0
 mem[0]  <= 32'b000000000000_00000_000_00101_0010011; // addi x5, x0, 0     ; i = 0
 // [1] N = 4
-mem[1]  <= 32'b000000010100_00000_000_00111_0010011; // addi x7, x0, 4     ; N = 20 or 10 according to data used
+mem[1]  <= 32'b000000010101_00000_000_00111_0010011; // addi x7, x0, 4     ; N = 20 or 10 according to data used
 
 // LOOP1:
 // [2] if (i < N) → continue_outer
@@ -332,10 +332,11 @@ mem[20] <= 32'b1_00001001_0_0000000000_00000_1101111; // jal x0, -Y          ; t
 mem[21] <= 32'b000000000000_00000_000_00000_0010011; // nop
 
   
-// Insertion Sort
+// Setup
+// Setup
 //mem[0]  <= 32'b000000000001_00000_000_00001_0010011; // addi x1, x0, 1         ; x1 = 1
 //mem[1]  <= 32'b000000000001_00000_000_00101_0010011; // addi x5, x0, 1         ; i = 1
-//mem[2]  <= 32'b000000001011_00000_000_00111_0010011; // addi x7, x0, 20        ; N = 20
+//mem[2]  <= 32'b000000010100_00000_000_00111_0010011; // addi x7, x0, 20        ; N = 20
 //mem[3]  <= 32'b000000000000_00000_000_00011_0010011; // addi x3, x0, 0         ; base = 0 (array starts at memory[0])
 
 //// OUTER_LOOP:
